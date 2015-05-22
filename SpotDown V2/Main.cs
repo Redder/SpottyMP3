@@ -15,7 +15,7 @@ using SpotifyAPI.SpotifyLocalAPI;
 // ** now on github **
 //
 // fixes
-// - fixed automatic downloading not redownload corrupted files
+// - fixed automatic downloading not redownloading corrupted files
 // - fixed artist/song label text's being in each other's spot, don't know how I missed that
 // - fixed including "original mix" in search terms which would screw up the download
 // - fixed window resizing issues
