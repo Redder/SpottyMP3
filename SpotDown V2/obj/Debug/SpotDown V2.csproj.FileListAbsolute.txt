@@ -9,3 +9,13 @@ c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\ob
 c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown V2.csproj.GenerateResource.Cache
 c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown V2.exe
 c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown V2.pdb
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\bin\Debug\SpotDown V2.exe.config
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\bin\Debug\SpotDown V2.exe
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\bin\Debug\SpotDown V2.pdb
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\bin\Debug\SpotifyAPI.dll
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown_V2.main.resources
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown_V2.Properties.Resources.resources
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown V2.csproj.GenerateResource.Cache
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown V2.exe
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown V2.pdb

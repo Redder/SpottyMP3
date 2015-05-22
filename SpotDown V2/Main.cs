@@ -95,8 +95,8 @@ namespace SpotDown_V2
         {
             startdownload:
             string term = artist + " - " + name;
-
-            if (string.IsNullOrWhiteSpace(artist))
+            
+            if (string.IsNullOrWhiteSpace(artist) || string.IsNullOrWhiteSpace(name) || mh.IsAdRunning())
                 return;
             if (term.Substring(term.Length - 15).ToLower() == " - original mix")
                 term = term.Substring(0, term.Length - 15);
@@ -129,7 +129,6 @@ namespace SpotDown_V2
                 // stuff to do after download finishes, I don't have anything to put here though
             }
 
-            while (client.IsBusy) { }
             FileInfo fileInfo = new FileInfo(browseForFolderBox.Text + "\\" + term + ".mp3");
             if (fileInfo.Length < 1000000 && retryIfUnder1Mb.Checked)
             {
