@@ -95,7 +95,6 @@ namespace SpotDown_V2
         {
             startdownload:
             string term = artist + " - " + name;
-            string destinationfile = browseForFolderBox.Text + term + ".mp3";
 
             if (string.IsNullOrWhiteSpace(artist))
                 return;
@@ -356,7 +355,7 @@ namespace SpotDown_V2
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.Description = "Select the folder for downloaded music to be saved to";
-            DialogResult result = fbd.ShowDialog();
+            fbd.ShowDialog();
             browseForFolderBox.Text = fbd.SelectedPath;
         }
 
