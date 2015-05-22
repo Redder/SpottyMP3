@@ -1,0 +1,11 @@
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\bin\Debug\SpotDown V2.exe.config
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\bin\Debug\SpotDown V2.exe
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\bin\Debug\SpotDown V2.pdb
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\bin\Debug\Newtonsoft.Json.dll
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\bin\Debug\SpotifyAPI.dll
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown V2.csprojResolveAssemblyReference.cache
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown_V2.main.resources
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown_V2.Properties.Resources.resources
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown V2.csproj.GenerateResource.Cache
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown V2.exe
+c:\users\scarsz\documents\visual studio 2013\Projects\SpotDown V2\SpotDown V2\obj\Debug\SpotDown V2.pdb
