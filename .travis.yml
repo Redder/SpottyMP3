@@ -1,2 +1,2 @@
 language: csharp
-solution: SpotDown V2.sln
+solution: "SpotDown V2.sln"
