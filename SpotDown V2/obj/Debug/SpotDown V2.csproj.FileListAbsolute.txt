@@ -19,3 +19,4 @@ C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown_V2.Prop
 C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown V2.csproj.GenerateResource.Cache
 C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown V2.exe
 C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown V2.pdb
+C:\Users\Scarsz\Documents\GitHub\SpotDown\SpotDown V2\obj\Debug\SpotDown V2.csprojResolveAssemblyReference.cache

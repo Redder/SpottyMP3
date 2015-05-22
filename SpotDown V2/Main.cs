@@ -19,6 +19,8 @@ using SpotifyAPI.SpotifyLocalAPI;
 // - fixed artist/song label text's being in each other's spot, don't know how I missed that
 // - fixed including "original mix" in search terms which would screw up the download
 // - fixed window resizing issues
+// - fixed track names with /'s looking like it's another directory instead of just part of the song name
+//   - song names with /'s will have the /'s replaced with -'s
 //
 // additions
 // - added async/awaits/trys/catches in places where they should have been in the first place, allows for better download handling
@@ -94,14 +96,16 @@ namespace SpotDown_V2
         private async Task executeDownload(string artist, string name)
         {
             startdownload:
+
             string term = artist + " - " + name;
-            
+            lastDownloaded = term.Replace("/", "-");
+
             if (string.IsNullOrWhiteSpace(artist) || string.IsNullOrWhiteSpace(name) || mh.IsAdRunning())
                 return;
             if (term.Substring(term.Length - 15).ToLower() == " - original mix")
                 term = term.Substring(0, term.Length - 15);
 
-            if (!File.Exists(browseForFolderBox.Text + term + ".mp3"))
+            if (!File.Exists(browseForFolderBox.Text + lastDownloaded + ".mp3"))
             {
                 addToLog("Searching MP3Clan for term \"" + term + "\"", logBox);
                 string pageSource = client.DownloadString(new Uri(string.Format("http://mp3clan.com/mp3_source.php?q={0}", term.Replace(" ", "+"))));
@@ -114,8 +118,6 @@ namespace SpotDown_V2
                     return;
                 }
 
-                lastDownloaded = term;
-
                 addToLog("TrackId: " + trackId.Groups[1].Value, logBox);
 
                 string dlLink = string.Format("http://mp3clan.com/app/get.php?mp3={0}", trackId.Groups[1].Value);
@@ -125,11 +127,11 @@ namespace SpotDown_V2
                 //client.DownloadFileCompleted += client_DownloadFileCompleted;
                 //client.DownloadFileCompleted += (object sender, AsyncCompletedEventArgs e) => addToLog("Download completed", logBox);
                 //client.DownloadFileAsync(new Uri(dlLink), string.Format("{0}\\{1}.mp3", browseForFolderBox.Text, term));
-                await Task.WhenAll(downloadFileAsync(dlLink, term));
+                await Task.WhenAll(downloadFileAsync(dlLink, lastDownloaded));
                 // stuff to do after download finishes, I don't have anything to put here though
             }
 
-            FileInfo fileInfo = new FileInfo(browseForFolderBox.Text + "\\" + term + ".mp3");
+            FileInfo fileInfo = new FileInfo(browseForFolderBox.Text + "\\" + lastDownloaded + ".mp3");
             if (fileInfo.Length < 1000000 && retryIfUnder1Mb.Checked)
             {
                 if (tryNumber < 3)
@@ -169,6 +171,8 @@ namespace SpotDown_V2
         }
         void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(lastDownloaded))
+                return;
             int fileSize = (int)new FileInfo(browseForFolderBox.Text + "\\" + lastDownloaded + ".mp3").Length;
             int fileSizeKb = fileSize / 1000;
             addToLog("Download completed for \"" + lastDownloaded + "\" with " + fileSizeKb + "KB", logBox);
