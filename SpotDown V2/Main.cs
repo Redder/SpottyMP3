@@ -28,6 +28,8 @@ using SpotifyAPI.SpotifyLocalAPI;
 // - added feature to automatically retry a download 3 times if the download completes with a <1MB file
 // - added option to have notification when downloads complete
 //
+//
+// TODO: Add queueing system for song downloads, probably going to use a List<string> and a foreach loop
 
 namespace SpotDown_V2
 {
@@ -37,10 +39,16 @@ namespace SpotDown_V2
         SpotifyMusicHandler mh;
         SpotifyEventHandler eh;
         int tryNumber = 0;
+        bool downloading = false;
         string lastDownloaded = string.Empty;
         WebClient client = new WebClient();
         ToolTip tt = new ToolTip();
-        int version = 1;
+        Stopwatch sw = new Stopwatch();
+        int time = 0;
+        int version = 2;
+
+        DateTime lastUpdate;
+        long lastBytes = 0;
 
         public main()
         {
@@ -93,61 +101,100 @@ namespace SpotDown_V2
             eh = spotify.GetEventHandler();
         }
 
-        private async Task executeDownload(string artist, string name)
+        private async Task executeDownload(string artist, string name, bool tellIfAlreadyExists = false)
         {
+            tryNumber = 0;
+            time = 0;
+
             startdownload:
-
-            string term = artist + " - " + name;
-            lastDownloaded = term.Replace("/", "-");
-
-            if (string.IsNullOrWhiteSpace(artist) || string.IsNullOrWhiteSpace(name) || mh.IsAdRunning())
-                return;
-            if (term.Substring(term.Length - 15).ToLower() == " - original mix")
-                term = term.Substring(0, term.Length - 15);
-
-            if (!File.Exists(browseForFolderBox.Text + lastDownloaded + ".mp3"))
+            try
             {
-                addToLog("Searching MP3Clan for term \"" + term + "\"", logBox);
-                string pageSource = client.DownloadString(new Uri(string.Format("http://mp3clan.com/mp3_source.php?q={0}", term.Replace(" ", "+"))));
-
-                Match trackId = new Regex("<div class=\"mp3list-table\" id=\"(.+?)\">").Match(pageSource);
-
-                if (trackId.Success == false || string.IsNullOrWhiteSpace(trackId.Groups[1].Value))
+                if (downloading)
                 {
-                    addToLog("Could not find TrackID, skipping download", logBox);
+                    addToLog("Already downloading a song, ignoring requested download", logBox);
                     return;
                 }
 
-                addToLog("TrackId: " + trackId.Groups[1].Value, logBox);
+                downloading = true;
+                string term = artist + " - " + name;
+                term = new Regex(string.Format("[{0}]", Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars())))).Replace(term, "");
 
-                string dlLink = string.Format("http://mp3clan.com/app/get.php?mp3={0}", trackId.Groups[1].Value);
-                addToLog("Downloading from link: " + dlLink, logBox);
+                if (string.IsNullOrWhiteSpace(artist) || string.IsNullOrWhiteSpace(name) || mh.IsAdRunning())
+                {
+                    downloading = false;
+                    return;
+                }
 
-                // old code before I used better await/async placement
-                //client.DownloadFileCompleted += client_DownloadFileCompleted;
-                //client.DownloadFileCompleted += (object sender, AsyncCompletedEventArgs e) => addToLog("Download completed", logBox);
-                //client.DownloadFileAsync(new Uri(dlLink), string.Format("{0}\\{1}.mp3", browseForFolderBox.Text, term));
-                await Task.WhenAll(downloadFileAsync(dlLink, lastDownloaded));
-                // stuff to do after download finishes, I don't have anything to put here though
+                if (term.Length > 16)
+                    if (term.Substring(term.Length - 15).ToLower() == " - original mix")
+                        term = term.Substring(0, term.Length - 15);
+                if (term.Contains(" - feat"))
+                    term = term.Split(new string[] { " - feat" }, StringSplitOptions.None)[0];
+
+                lastDownloaded = term;
+
+                if (!File.Exists(browseForFolderBox.Text + lastDownloaded + ".mp3"))
+                {
+                    addToLog("Searching MP3Clan for term \"" + term + "\"", logBox);
+                    string pageSource = client.DownloadString(new Uri(string.Format("http://mp3clan.com/mp3_source.php?q={0}", term.Replace(" ", "+"))));
+
+                    Match trackId = new Regex("<div class=\"mp3list-table\" id=\"(.+?)\">").Match(pageSource);
+
+                    if (trackId.Success == false || string.IsNullOrWhiteSpace(trackId.Groups[1].Value))
+                    {
+                        if (tryNumber < 3)
+                        {
+                            downloading = false;
+                            tryNumber++;
+                            addToLog("Could not find TrackID, retrying " + tryNumber + "/3", logBox);
+                            goto startdownload;
+                        }
+                        else
+                        {
+                            addToLog("Could not find TrackID, skipping download", logBox);
+                            downloading = false;
+                            return;
+                        }
+                    }
+
+                    addToLog("TrackId: " + trackId.Groups[1].Value, logBox);
+
+                    string dlLink = string.Format("http://mp3clan.com/app/get.php?mp3={0}", trackId.Groups[1].Value);
+                    addToLog("Downloading from link: " + dlLink, logBox);
+
+                    sw.Start();
+                    await Task.WhenAll(downloadFileAsync(dlLink, lastDownloaded));
+                }
+                else { if (tellIfAlreadyExists) { addToLog("Song already downloaded", logBox); } downloading = false; }
+
+                FileInfo fileInfo = new FileInfo(browseForFolderBox.Text + lastDownloaded + ".mp3");
+                if (fileInfo.Length < 1000000 && retryIfUnder1Mb.Checked)
+                {
+                    if (tryNumber < 3)
+                    {
+                        downloading = false;
+                        tryNumber++;
+                        if (File.Exists(browseForFolderBox.Text +  lastDownloaded + ".mp3"))
+                            File.Delete(browseForFolderBox.Text +  lastDownloaded + ".mp3");
+                        addToLog("File downloaded was under 1MB, redownloading try " + tryNumber + "/3", logBox);
+                        goto startdownload;
+                    }
+                    else
+                    {
+                        downloading = false;
+                        addToLog(term + " failed to download every try, skipping", logBox);
+                        if (Settings.Default.DownloadNotifications)
+                            notifyIcon.ShowBalloonTip(3000, "Download error", "The download for \"" + lastDownloaded + "\" failed to download.", ToolTipIcon.Error);
+                    }
+                }
+                downloading = false;
             }
-
-            FileInfo fileInfo = new FileInfo(browseForFolderBox.Text + "\\" + lastDownloaded + ".mp3");
-            if (fileInfo.Length < 1000000 && retryIfUnder1Mb.Checked)
+            catch (Exception e)
             {
-                if (tryNumber < 3)
-                {
-                    tryNumber++;
-                    if (File.Exists(browseForFolderBox.Text + "\\" + term + ".mp3"))
-                        File.Delete(browseForFolderBox.Text + "\\" + term + ".mp3");
-                    addToLog("File downloaded was under 1MB, redownloading try " + tryNumber + "/3", logBox);
-                    goto startdownload;
-                }
-                else
-                {
-                    addToLog(term + " failed to download every try, skipping", logBox);
-                    if (Settings.Default.DownloadNotifications)
-                        notifyIcon.ShowBalloonTip(3000, "Download error", "The download for " + term + " failed to download.", ToolTipIcon.Error);
-                }
+                downloading = false;
+                tryNumber++;
+                addToLog("Error downloading file, retrying " + tryNumber + "\n" + e.ToString(), logBox);
+                goto startdownload;
             }
         }
         private async Task downloadFileAsync(string url, string term)
@@ -156,32 +203,63 @@ namespace SpotDown_V2
             {
                 await client.DownloadFileTaskAsync(new Uri(url), string.Format(browseForFolderBox.Text + "\\" + term + ".mp3"));
             }
+            // System.Net.WebException: An exception occurred during a WebClient request. ---> System.IO.IOException: Unable to read data from the transport connection: The connection was closed.
+            catch (WebException)
+            {
+                addToLog("Error downloading file: connection closed", logBox);
+            }
             catch (Exception e)
             {
-                addToLog("Error downloading file: " + e.ToString(), logBox);
+                addToLog("Error downloading file:\n" + e.ToString(), logBox);
             }
         }
         void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             if (e.TotalBytesToReceive > 0)
             {
+                try
+                {
+                    if (lastBytes == 0)
+                    {
+                        lastUpdate = DateTime.Now;
+                        lastBytes = e.BytesReceived;
+                        return;
+                    }
+                    DateTime now = DateTime.Now;
+                    TimeSpan timeSpan = now - lastUpdate;
+                    long bytesChange = e.BytesReceived - lastBytes;
+                    long bytesPerSecond = 0;
+                    if (timeSpan.Seconds > 0) // stupid divide by zero errors
+                        bytesPerSecond = bytesChange / timeSpan.Seconds;
+
+                    downloadSpeedLabel.Text = bytesPerSecond / 1000 + "KB/s";
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.ToString());
+                }
+                
+                downloadBytesLabel.Text = e.BytesReceived / 1000 + "/" + e.TotalBytesToReceive / 1000;
                 downloadProgress.Maximum = (int)e.TotalBytesToReceive;
                 downloadProgress.Value = (int)e.BytesReceived;
             }
         }
         void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            time = (int)sw.ElapsedMilliseconds / 1000;
+            sw.Reset();
             if (string.IsNullOrWhiteSpace(lastDownloaded))
                 return;
             int fileSize = (int)new FileInfo(browseForFolderBox.Text + "\\" + lastDownloaded + ".mp3").Length;
             int fileSizeKb = fileSize / 1000;
-            addToLog("Download completed for \"" + lastDownloaded + "\" with " + fileSizeKb + "KB", logBox);
-            if (Settings.Default.DownloadNotifications && !string.IsNullOrWhiteSpace(lastDownloaded))
+            if (fileSize > 1000000)
             {
-                if (fileSize > 1000000)
-                {
-                    notifyIcon.ShowBalloonTip(3000, "Download completed", "The download for " + lastDownloaded + " completed.", ToolTipIcon.Info);
-                }
+                if (tryNumber == 0)
+                    addToLog("Download completed for \"" + lastDownloaded + "\" with " + fileSizeKb + "KB in " + time + " seconds in " + (tryNumber + 1) + " try", logBox);
+                else
+                    addToLog("Download completed for \"" + lastDownloaded + "\" with " + fileSizeKb + "KB in " + time + " seconds in " + (tryNumber + 1) + " tries", logBox);
+                if (Settings.Default.DownloadNotifications)
+                    notifyIcon.ShowBalloonTip(3000, "Download completed", "The download for \"" + lastDownloaded + "\" completed in " + time + " seconds.", ToolTipIcon.Info);
             }
         }
 
@@ -193,16 +271,24 @@ namespace SpotDown_V2
             }
             else
             {
-                logBox.AppendText("\n[" + DateTime.Now.ToString("h:mm:ss tt") + "] " + info);
+                //logBox.AppendText("\n[" + DateTime.Now.ToString("h:mm:ss tt") + "] " + info);
+                logBox.Text = "[" + DateTime.Now.ToString("h:mm:ss tt") + "] " + info + "\n" + logBox.Text;
             }
         }
         void updateCheck()
         {
-            int latest = Convert.ToInt32(client.DownloadString("https://github.com/Scarsz/SpotDown/raw/master/version").Trim());
-            if (latest > version)
+            try
             {
-                MessageBox.Show("This version of SpotDown is outdated!");
-                Process.Start("https://github.com/Scarsz/SpotDown/releases");
+                int latest = Convert.ToInt32(client.DownloadString("https://github.com/Scarsz/SpotDown/raw/master/version").Trim());
+                if (latest > version)
+                {
+                    MessageBox.Show("This version of SpotDown is outdated!");
+                    Process.Start("https://github.com/Scarsz/SpotDown/releases");
+                }
+            }
+            catch (Exception)
+            {
+                addToLog("Update check failed", logBox);
             }
         }
 
@@ -239,17 +325,14 @@ namespace SpotDown_V2
             eh.ListenForEvents(true);
 
             if (string.IsNullOrWhiteSpace(Settings.Default.DownloadDestination))
-            {
                 browseForFolderBox.Text = System.AppDomain.CurrentDomain.BaseDirectory;
-            }
             else
-            {
                 browseForFolderBox.Text = Settings.Default.DownloadDestination;
-            }
+
             retryIfUnder1Mb.Checked = Settings.Default.DownloadRetry;
             liveDownloads.Checked = Settings.Default.DownloadAutomatically;
             showDownloadNotification.Checked = Settings.Default.DownloadNotifications;
-
+            
             tt.AutoPopDelay = 5000;
             tt.InitialDelay = 1000;
             tt.ReshowDelay = 500;
@@ -264,13 +347,25 @@ namespace SpotDown_V2
             albumLinkLabel.Text = e.new_track.GetAlbumName();
             adPlaying.Text = "AdPlaying: " + mh.IsAdRunning();
             if (!mh.IsAdRunning())
-                currentPicture.Image = await e.new_track.GetAlbumArtAsync(AlbumArtSize.SIZE_160);
+                currentPicture.Image = await e.new_track.GetAlbumArtAsync(AlbumArtSize.SIZE_640);
             if (Settings.Default.DownloadAutomatically)
                 await executeDownload(mh.GetCurrentTrack().GetArtistName(), mh.GetCurrentTrack().GetTrackName());
         }
         private void timeChange(TrackTimeChangeEventArgs e)
         {
-            currentBar.Value = (int)e.track_time * 100;
+            if (!mh.IsAdRunning())
+            {
+                try
+                {
+                    currentBar.Maximum = (int)mh.GetCurrentTrack().length * 100;
+                    currentBar.Value = (int)e.track_time * 100;
+                }
+                catch
+                {
+                    currentBar.Maximum = currentBar.Maximum * 100;
+                    currentBar.Value = currentBar.Value * 100;
+                }
+            }
         }
         private void playstateChange(PlayStateEventArgs e)
         {
@@ -299,7 +394,7 @@ namespace SpotDown_V2
         }
         private async void downloadButton_Click(object sender, EventArgs e)
         {
-            await executeDownload(mh.GetCurrentTrack().GetArtistName(), mh.GetCurrentTrack().GetTrackName());
+            await executeDownload(mh.GetCurrentTrack().GetArtistName(), mh.GetCurrentTrack().GetTrackName(), true);
         }
         private async void liveDownloads_CheckedChanged(object sender, EventArgs e)
         {
@@ -321,7 +416,11 @@ namespace SpotDown_V2
         }
         private void browseForFolderBox_Leave(object sender, EventArgs e)
         {
-            if (!Directory.Exists(browseForFolderBox.Text))
+            if (string.IsNullOrWhiteSpace(browseForFolderBox.Text))
+            {
+                browseForFolderBox.Text = Settings.Default.DownloadDestination;
+            }
+            else if (!Directory.Exists(browseForFolderBox.Text))
             {
                 addToLog("Selected folder doesn't exist, reverting to default", logBox);
                 browseForFolderBox.Text = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -333,33 +432,15 @@ namespace SpotDown_V2
             Settings.Default.DownloadDestination = browseForFolderBox.Text;
             Settings.Default.Save();
         }
-        private void browseForFolderBox_TextChanged(object sender, EventArgs e)
-        {
-            if (!browseForFolderBox.Focused)
-            {
-                if (string.IsNullOrWhiteSpace(browseForFolderBox.Text))
-                {
-                    browseForFolderBox.Text = Settings.Default.DownloadDestination;
-                }
-                else if (!Directory.Exists(browseForFolderBox.Text))
-                {
-                    addToLog("Selected folder doesn't exist, reverting to default", logBox);
-                    browseForFolderBox.Text = System.AppDomain.CurrentDomain.BaseDirectory;
-                }
-
-                if (browseForFolderBox.Text.Substring(browseForFolderBox.Text.Length - 1, 1) != "\\")
-                    browseForFolderBox.Text = browseForFolderBox.Text + "\\";
-
-                Settings.Default.DownloadDestination = browseForFolderBox.Text;
-                Settings.Default.Save();
-            }
-        }
         private void browseForFolderPicture_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.Description = "Select the folder for downloaded music to be saved to";
             fbd.ShowDialog();
             browseForFolderBox.Text = fbd.SelectedPath;
+            browseForFolderBox.Focus();
+            logBox.Focus();
+            browseForFolderBox.Focus();
         }
 
         private void main_Resize(object sender, EventArgs e)

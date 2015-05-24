@@ -59,7 +59,8 @@
             this.ogcreatorLabel = new System.Windows.Forms.LinkLabel();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.downloadProgress = new System.Windows.Forms.ProgressBar();
-            this.downloadProgessLabel = new System.Windows.Forms.Label();
+            this.downloadSpeedLabel = new System.Windows.Forms.Label();
+            this.downloadBytesLabel = new System.Windows.Forms.Label();
             this.currentBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.currentPicture)).BeginInit();
             this.optionsBox.SuspendLayout();
@@ -274,7 +275,6 @@
             this.browseForFolderBox.Name = "browseForFolderBox";
             this.browseForFolderBox.Size = new System.Drawing.Size(206, 20);
             this.browseForFolderBox.TabIndex = 3;
-            this.browseForFolderBox.TextChanged += new System.EventHandler(this.browseForFolderBox_TextChanged);
             this.browseForFolderBox.Leave += new System.EventHandler(this.browseForFolderBox_Leave);
             // 
             // liveDownloads
@@ -353,7 +353,7 @@
             // 
             this.ogcreatorLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.ogcreatorLabel.AutoSize = true;
-            this.ogcreatorLabel.Location = new System.Drawing.Point(517, 270);
+            this.ogcreatorLabel.Location = new System.Drawing.Point(518, 270);
             this.ogcreatorLabel.Name = "ogcreatorLabel";
             this.ogcreatorLabel.Size = new System.Drawing.Size(254, 13);
             this.ogcreatorLabel.TabIndex = 6;
@@ -371,28 +371,44 @@
             // downloadProgress
             // 
             this.downloadProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.downloadProgress.Location = new System.Drawing.Point(367, 225);
+            this.downloadProgress.Location = new System.Drawing.Point(397, 225);
             this.downloadProgress.Maximum = 1;
             this.downloadProgress.Name = "downloadProgress";
-            this.downloadProgress.Size = new System.Drawing.Size(405, 19);
+            this.downloadProgress.Size = new System.Drawing.Size(375, 19);
             this.downloadProgress.TabIndex = 7;
             this.downloadProgress.Value = 1;
             // 
-            // downloadProgessLabel
+            // downloadSpeedLabel
             // 
-            this.downloadProgessLabel.AutoSize = true;
-            this.downloadProgessLabel.Location = new System.Drawing.Point(262, 228);
-            this.downloadProgessLabel.Name = "downloadProgessLabel";
-            this.downloadProgessLabel.Size = new System.Drawing.Size(99, 13);
-            this.downloadProgessLabel.TabIndex = 17;
-            this.downloadProgessLabel.Text = "Download Progress";
+            this.downloadSpeedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.downloadSpeedLabel.AutoSize = true;
+            this.downloadSpeedLabel.Location = new System.Drawing.Point(264, 228);
+            this.downloadSpeedLabel.Name = "downloadSpeedLabel";
+            this.downloadSpeedLabel.Size = new System.Drawing.Size(49, 13);
+            this.downloadSpeedLabel.TabIndex = 18;
+            this.downloadSpeedLabel.Text = "512KB/s";
+            // 
+            // downloadBytesLabel
+            // 
+            this.downloadBytesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.downloadBytesLabel.AutoSize = true;
+            this.downloadBytesLabel.Location = new System.Drawing.Point(319, 228);
+            this.downloadBytesLabel.Name = "downloadBytesLabel";
+            this.downloadBytesLabel.Size = new System.Drawing.Size(72, 13);
+            this.downloadBytesLabel.TabIndex = 19;
+            this.downloadBytesLabel.Text = "16000/16000";
             // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 298);
-            this.Controls.Add(this.downloadProgessLabel);
+            this.Controls.Add(this.downloadBytesLabel);
+            this.Controls.Add(this.downloadSpeedLabel);
             this.Controls.Add(this.downloadProgress);
             this.Controls.Add(this.ogcreatorLabel);
             this.Controls.Add(this.downloadersourceLabel);
@@ -450,8 +466,9 @@
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.CheckBox retryIfUnder1Mb;
         private System.Windows.Forms.ProgressBar downloadProgress;
-        private System.Windows.Forms.Label downloadProgessLabel;
         private System.Windows.Forms.CheckBox showDownloadNotification;
+        private System.Windows.Forms.Label downloadSpeedLabel;
+        private System.Windows.Forms.Label downloadBytesLabel;
     }
 }
 
