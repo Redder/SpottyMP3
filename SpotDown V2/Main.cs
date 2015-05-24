@@ -12,22 +12,7 @@ using SpotifyAPI.SpotifyLocalAPI;
 
 // Changelog from v2.0 to v2.1
 //
-// ** now on github **
-//
-// fixes
-// - fixed automatic downloading not redownloading corrupted files
-// - fixed artist/song label text's being in each other's spot, don't know how I missed that
-// - fixed including "original mix" in search terms which would screw up the download
-// - fixed window resizing issues
-// - fixed track names with /'s looking like it's another directory instead of just part of the song name
-//   - song names with /'s will have the /'s replaced with -'s
-//
-// additions
-// - added async/awaits/trys/catches in places where they should have been in the first place, allows for better download handling
-// - added download progress bar [requested by ElementalTree]
-// - added feature to automatically retry a download 3 times if the download completes with a <1MB file
-// - added option to have notification when downloads complete
-//
+// general bug fixes, added more asyncs and stuff
 //
 // TODO: Add queueing system for song downloads, probably going to use a List<string> and a foreach loop
 
