@@ -110,7 +110,7 @@ namespace SpotDown_V2
                     return;
                 }
 
-                if (term.Length > 16)
+                if (term.Length > 15)
                     if (term.Substring(term.Length - 15).ToLower() == " - original mix")
                         term = term.Substring(0, term.Length - 15);
                 if (term.Contains(" - feat"))
