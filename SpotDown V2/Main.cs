@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 using SpotifyAPI.SpotifyLocalAPI;
 
-// Changelog from v2.0 to v2.1
+// Changelog from v2.1 to v2.2
 //
 // general bug fixes, added more asyncs and stuff
 //
