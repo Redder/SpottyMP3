@@ -2,7 +2,7 @@
 Spotify music downloader powered by MP3Clan
 
 # Downloads
-https://github.com/Scarsz/SpotDown/releases/latest
+https://github.com/Scarsz/SpottyMP3/releases/latest
 
 # Video
 [![Video](http://share.gifyoutube.com/vWLRwO.gif)](https://www.youtube.com/watch?v=yVZ6kicyPUE)
