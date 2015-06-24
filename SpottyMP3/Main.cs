@@ -10,15 +10,30 @@ using System.Windows.Forms;
 
 using SpotifyAPI.SpotifyLocalAPI;
 
-// Changelog from v2.1 to v2.2
+// Changelog from v2.0 to v2.1
 //
-// general bug fixes, added more asyncs and stuff
+// ** now on github **
+//
+// fixes
+// - fixed automatic downloading not redownloading corrupted files
+// - fixed artist/song label text's being in each other's spot, don't know how I missed that
+// - fixed including "original mix" in search terms which would screw up the download
+// - fixed window resizing issues
+// - fixed track names with /'s looking like it's another directory instead of just part of the song name
+//   - song names with /'s will have the /'s replaced with -'s
+//
+// additions
+// - added async/awaits/trys/catches in places where they should have been in the first place, allows for better download handling
+// - added download progress bar [requested by ElementalTree]
+// - added feature to automatically retry a download 3 times if the download completes with a <1MB file
+// - added option to have notification when downloads complete
+//
 //
 // TODO: Add queueing system for song downloads, probably going to use a List<string> and a foreach loop
 
-namespace SpotDown_V2
+namespace SpottyMP3
 {
-    public partial class main : Form
+    public partial class Main : Form
     {
         SpotifyLocalAPIClass spotify;
         SpotifyMusicHandler mh;
@@ -35,7 +50,7 @@ namespace SpotDown_V2
         DateTime lastUpdate;
         long lastBytes = 0;
 
-        public main()
+        public Main()
         {
             InitializeComponent();
             updateCheck();
@@ -110,7 +125,7 @@ namespace SpotDown_V2
                     return;
                 }
 
-                if (term.Length > 15)
+                if (term.Length > 16)
                     if (term.Substring(term.Length - 15).ToLower() == " - original mix")
                         term = term.Substring(0, term.Length - 15);
                 if (term.Contains(" - feat"))
@@ -264,11 +279,11 @@ namespace SpotDown_V2
         {
             try
             {
-                int latest = Convert.ToInt32(client.DownloadString("https://github.com/Scarsz/SpotDown/raw/master/version").Trim());
+                int latest = Convert.ToInt32(client.DownloadString("https://github.com/Scarsz/SpottyMP3/raw/master/version").Trim());
                 if (latest > version)
                 {
-                    MessageBox.Show("This version of SpotDown is outdated!");
-                    Process.Start("https://github.com/Scarsz/SpotDown/releases");
+                    MessageBox.Show("This version of SpottyMP3 is outdated!");
+                    Process.Start("https://github.com/Scarsz/SpottyMP3/releases");
                 }
             }
             catch (Exception)
@@ -279,8 +294,8 @@ namespace SpotDown_V2
 
         private async void main_Load(object sender, EventArgs e)
         {
-            this.Text = "SpotDown v2." + version;
-            addToLog("Initialization of SpotDown v2." + version + " complete, enjoy!", logBox);
+            this.Text = "SpottyMP3 v2." + version;
+            addToLog("Initialization of SpottyMP3 v2." + version + " complete, enjoy!", logBox);
 
             spotify.Update();
             currentBar.Maximum = mh.GetCurrentTrack().GetLength() * 100;
@@ -432,7 +447,7 @@ namespace SpotDown_V2
         {
             if (this.WindowState == FormWindowState.Minimized)
             {
-                notifyIcon.ShowBalloonTip(1000, "SpotDown is still running", "SpotDown has been minimized to the task tray", ToolTipIcon.Info);
+                notifyIcon.ShowBalloonTip(1000, "SpottyMP3 is still running", "SpottyMP3 has been minimized to the task tray", ToolTipIcon.Info);
                 this.ShowInTaskbar = false;
             }
         }

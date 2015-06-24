@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpotDown_V2
+namespace SpottyMP3
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace SpotDown_V2
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new main());
+            Application.Run(new Main());
         }
     }
 }

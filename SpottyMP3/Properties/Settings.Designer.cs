@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SpotDown_V2.Properties
+namespace SpottyMP3.Properties
 {
 
 

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SpotDown V2")]
-[assembly: AssemblyDescription("Download music from MP3Clan, powered by Spotify.")]
+[assembly: AssemblyTitle("SpottyMP3")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SpotDown V2")]
-[assembly: AssemblyCopyright("Copyright © ScarszRawr 2015")]
+[assembly: AssemblyProduct("SpottyMP3")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d98d5ca9-e18a-4c2f-a31c-8d47dcce6bec")]
+[assembly: Guid("fec3cdab-5072-41dc-88d0-7868c6b2bc98")]
 
 // Version information for an assembly consists of the following four values:
 //

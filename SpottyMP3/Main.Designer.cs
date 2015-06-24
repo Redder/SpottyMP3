@@ -1,6 +1,6 @@
-﻿namespace SpotDown_V2
+﻿namespace SpottyMP3
 {
-    partial class main
+    partial class Main
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.currentBar = new System.Windows.Forms.ProgressBar();
             this.currentBox = new System.Windows.Forms.GroupBox();
             this.downloadButton = new System.Windows.Forms.Button();
@@ -363,7 +363,6 @@
             // notifyIcon
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "SpotDown";
             this.notifyIcon.Visible = true;
             this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
@@ -402,7 +401,7 @@
             this.downloadBytesLabel.TabIndex = 19;
             this.downloadBytesLabel.Text = "16000/16000";
             // 
-            // main
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -419,7 +418,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(800, 337);
             this.MinimumSize = new System.Drawing.Size(600, 337);
-            this.Name = "main";
+            this.Name = "Main";
             this.Text = "SpotDown v2";
             this.Load += new System.EventHandler(this.main_Load);
             this.Resize += new System.EventHandler(this.main_Resize);

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SpotDown_V2 {
+namespace SpottyMP3 {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
