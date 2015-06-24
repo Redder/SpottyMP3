@@ -1,4 +1,4 @@
-# SpotDown [![Build status](https://travis-ci.org/Scarsz/SpotDown.svg?branch=master)](https://travis-ci.org/Scarsz/SpotDown)
+# SpottyMP3 [![Build status](https://travis-ci.org/Scarsz/SpotDown.svg?branch=master)](https://travis-ci.org/Scarsz/SpotDown)
 Spotify music downloader powered by MP3Clan
 
 # Downloads
