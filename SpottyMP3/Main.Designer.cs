@@ -63,7 +63,6 @@ namespace SpottyMP3
             this.downloadBytesLabel = new System.Windows.Forms.Label();
             this.creditsBox = new System.Windows.Forms.GroupBox();
             this.redderLabel = new System.Windows.Forms.LinkLabel();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.currentBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.currentPicture)).BeginInit();
             this.optionsBox.SuspendLayout();
@@ -348,10 +347,10 @@ namespace SpottyMP3
             this.downloadersourceLabel.AutoSize = true;
             this.downloadersourceLabel.Location = new System.Drawing.Point(6, 38);
             this.downloadersourceLabel.Name = "downloadersourceLabel";
-            this.downloadersourceLabel.Size = new System.Drawing.Size(190, 13);
+            this.downloadersourceLabel.Size = new System.Drawing.Size(188, 13);
             this.downloadersourceLabel.TabIndex = 5;
             this.downloadersourceLabel.TabStop = true;
-            this.downloadersourceLabel.Text = "Modified downloader Source: privTech";
+            this.downloadersourceLabel.Text = "Modified downloader source: privTech";
             // 
             // ogcreatorLabel
             // 
@@ -424,24 +423,18 @@ namespace SpottyMP3
             // 
             this.redderLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.redderLabel.AutoSize = true;
-            this.redderLabel.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.redderLabel.Location = new System.Drawing.Point(229, 38);
+            this.redderLabel.Location = new System.Drawing.Point(265, 38);
             this.redderLabel.Name = "redderLabel";
-            this.redderLabel.Size = new System.Drawing.Size(145, 13);
+            this.redderLabel.Size = new System.Drawing.Size(109, 13);
             this.redderLabel.TabIndex = 7;
             this.redderLabel.TabStop = true;
-            this.redderLabel.Text = "New Active Editor: Redder04";
-            // 
-            // timer1
-            // 
-            this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.redderLabel.Text = "Comments: Redder04";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(659, 299);
+            this.ClientSize = new System.Drawing.Size(659, 298);
             this.Controls.Add(this.creditsBox);
             this.Controls.Add(this.downloadBytesLabel);
             this.Controls.Add(this.downloadSpeedLabel);
@@ -506,7 +499,6 @@ namespace SpottyMP3
         private System.Windows.Forms.Label downloadBytesLabel;
         private System.Windows.Forms.GroupBox creditsBox;
         private System.Windows.Forms.LinkLabel redderLabel;
-        private System.Windows.Forms.Timer timer1;
     }
 }
 
