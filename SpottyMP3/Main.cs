@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -31,6 +31,16 @@ using SpotifyAPI.SpotifyLocalAPI;
 //
 // TODO: Add queueing system for song downloads, probably going to use a List<string> and a foreach loop
 
+/* Changelog from v2.1 to v2.2 (Updated by: Redder04)
+ * 
+ * - Added as much comments as I could (im still a beginner so I don't understand most things)
+ * - Added credits box to UI, makes it look more organized, and its "responsive"
+ * - Changed InitializeComponent() to the end of the Main funciton instead of beginning.
+ * - Modified startup process, more efficient
+ * - Fixed Error when Program starts without a track playing in spotify, it crashes
+ * - Added timer that ticks every second, so that If user changes song on spotify app, it updates on the program
+ */
+
 namespace SpottyMP3
 {
     public partial class Main : Form
@@ -52,29 +62,49 @@ namespace SpottyMP3
 
         public Main()
         {
-            InitializeComponent();
             updateCheck();
+            spotify = new SpotifyLocalAPIClass();   //Creating a new instance of Spotify Local API
 
-            spotify = new SpotifyLocalAPIClass();
-
-            if (!SpotifyLocalAPIClass.IsSpotifyRunning())
+            if (!SpotifyLocalAPIClass.IsSpotifyRunning())   //If Spotify is not running then
             {
-                spotify.RunSpotify();
+                spotify.RunSpotify();   //Run spotify
+
+                /*------------------------------------------------
+                The follwing waits 5 seconds for spotify to open, if its not opened within 5 seconds it will exit (this is original)
+                
                 Thread.Sleep(5000);
                 if (!SpotifyLocalAPIClass.IsSpotifyRunning())
                 {
                     MessageBox.Show("Spotify didn't open after 5 seconds, exiting");
                     Environment.Exit(1);
                 }
+                ------------------------------------------------*/
+
+                //The following stays in a loop while spotify is opeening up, Is this better than the original?
+                while (!SpotifyLocalAPIClass.IsSpotifyRunning())
+                {
+                    MessageBox.Show("Opening Spotify"); //Messagebox doesnt even show lol, can I just leave it blank?
+                }
             }
             if (!SpotifyLocalAPIClass.IsSpotifyWebHelperRunning())
             {
-                spotify.RunSpotifyWebHelper();
+                spotify.RunSpotifyWebHelper();  //Run Spotify Web Helper
+
+                /*------------------------------------------------
+                The follwing waits 5 seconds for spotify to open, if its not opened within 5 seconds it will exit (this is original)
+
                 Thread.Sleep(5000);
                 if (!SpotifyLocalAPIClass.IsSpotifyWebHelperRunning())
                 {
                     MessageBox.Show("Spotify Web Helper didn't open after 5 seconds, exiting");
                     Environment.Exit(2);
+                }
+                ------------------------------------------------*/
+
+                //The following stays in a loop while SpotifyWebHelper is opeening up, Is this better than the original?
+                while (!SpotifyLocalAPIClass.IsSpotifyWebHelperRunning())
+                {
+                    MessageBox.Show("Opening SpotifyWebHelper"); //Messagebox doesnt even show lol, can I just leave it blank?
                 }
             }
 
@@ -99,8 +129,9 @@ namespace SpottyMP3
             }
             mh = spotify.GetMusicHandler();
             eh = spotify.GetEventHandler();
+            InitializeComponent();
         }
-
+        //executeDownload(mh.GetCurrentTrack().GetArtistName(), mh.GetCurrentTrack().GetTrackName(), true);
         private async Task executeDownload(string artist, string name, bool tellIfAlreadyExists = false)
         {
             tryNumber = 0;
@@ -116,40 +147,42 @@ namespace SpottyMP3
                 }
 
                 downloading = true;
-                string term = artist + " - " + name;
-                term = new Regex(string.Format("[{0}]", Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars())))).Replace(term, "");
-
-                if (string.IsNullOrWhiteSpace(artist) || string.IsNullOrWhiteSpace(name) || mh.IsAdRunning())
+                
+                string term = artist + " - " + name;    //Building Search Term
+                term = new Regex(string.Format("[{0}]", Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars())))).Replace(term, "");  //Removing any invalid characters?
+                
+                if (string.IsNullOrWhiteSpace(artist) || string.IsNullOrWhiteSpace(name) || mh.IsAdRunning())   //If there is no artist or no name or an ad is running return since theres nothing to download
                 {
                     downloading = false;
                     return;
                 }
 
-                if (term.Length > 16)
+                if (term.Length > 16)   //If term is greater than 16 characters then check if the term ends in orignal mix
                     if (term.Substring(term.Length - 15).ToLower() == " - original mix")
-                        term = term.Substring(0, term.Length - 15);
+                        term = term.Substring(0, term.Length - 15); //Remove "Original Mix"
+                //The following removes feat from term? , not sure, im not this advance lol
                 if (term.Contains(" - feat"))
                     term = term.Split(new string[] { " - feat" }, StringSplitOptions.None)[0];
 
                 lastDownloaded = term;
 
-                if (!File.Exists(browseForFolderBox.Text + lastDownloaded + ".mp3"))
+                if (!File.Exists(browseForFolderBox.Text + lastDownloaded + ".mp3"))    //If the song wasent downloaded to the folder already
                 {
                     addToLog("Searching MP3Clan for term \"" + term + "\"", logBox);
-                    string pageSource = client.DownloadString(new Uri(string.Format("http://mp3clan.com/mp3_source.php?q={0}", term.Replace(" ", "+"))));
+                    string pageSource = client.DownloadString(new Uri(string.Format("http://mp3clan.com/mp3_source.php?q={0}", term.Replace(" ", "+"))));   //Perform search and get page source
+                    //Perfom a search query in your browser and you can view the source to understand next line
+                    Match trackId = new Regex("<div class=\"mp3list-table\" id=\"(.+?)\">").Match(pageSource);  //Checks if div exists in the page source //What is (.+?) 
 
-                    Match trackId = new Regex("<div class=\"mp3list-table\" id=\"(.+?)\">").Match(pageSource);
-
-                    if (trackId.Success == false || string.IsNullOrWhiteSpace(trackId.Groups[1].Value))
+                    if (trackId.Success == false || string.IsNullOrWhiteSpace(trackId.Groups[1].Value)) //If there was no match or ...I don't know what is trackId.Groups[1].Value? Is it the ID of the div?
                     {
-                        if (tryNumber < 3)
+                        if (tryNumber < 3)  //If try number is less than 3, retry download
                         {
                             downloading = false;
                             tryNumber++;
                             addToLog("Could not find TrackID, retrying " + tryNumber + "/3", logBox);
                             goto startdownload;
                         }
-                        else
+                        else  //If try number is greater than 3, then skip the download/give up
                         {
                             addToLog("Could not find TrackID, skipping download", logBox);
                             downloading = false;
@@ -162,13 +195,13 @@ namespace SpottyMP3
                     string dlLink = string.Format("http://mp3clan.com/app/get.php?mp3={0}", trackId.Groups[1].Value);
                     addToLog("Downloading from link: " + dlLink, logBox);
 
-                    sw.Start();
-                    await Task.WhenAll(downloadFileAsync(dlLink, lastDownloaded));
+                    sw.Start(); //Start the stopwatch
+                    await Task.WhenAll(downloadFileAsync(dlLink, lastDownloaded));  //Download the track
                 }
-                else { if (tellIfAlreadyExists) { addToLog("Song already downloaded", logBox); } downloading = false; }
+                else { if (tellIfAlreadyExists) { addToLog("Song already downloaded", logBox); } downloading = false; } //FIle already downloaded
 
                 FileInfo fileInfo = new FileInfo(browseForFolderBox.Text + lastDownloaded + ".mp3");
-                if (fileInfo.Length < 1000000 && retryIfUnder1Mb.Checked)
+                if (fileInfo.Length < 1000000 && retryIfUnder1Mb.Checked)   //If length of file is less than 1mb and retry under 1mb is checked then retry download
                 {
                     if (tryNumber < 3)
                     {
@@ -294,25 +327,39 @@ namespace SpottyMP3
 
         private async void main_Load(object sender, EventArgs e)
         {
-            this.Text = "SpottyMP3 v2." + version;
-            addToLog("Initialization of SpottyMP3 v2." + version + " complete, enjoy!", logBox);
+            this.Text = "SpottyMP3 v2." + version;  //Changes text to match version user is using
+            addToLog("Initialization of SpottyMP3 v2." + version + " complete, enjoy!", logBox);    //Add to log
 
             spotify.Update();
-            currentBar.Maximum = mh.GetCurrentTrack().GetLength() * 100;
-            adPlaying.Text = "AdPlaying: " + mh.IsAdRunning();
-            songPlaying.Text = "Playing: " + mh.IsPlaying();
+            
+            adPlaying.Text = "AdPlaying: " + mh.IsAdRunning();  //Is an AD Playing right now?
+            songPlaying.Text = "Playing: " + mh.IsPlaying();    //Is a song playing right now?
+
+            timer1.Start();
+            //If an add is not running then get the tracks image
             if (!mh.IsAdRunning())
                 currentPicture.Image = await spotify.GetMusicHandler().GetCurrentTrack().GetAlbumArtAsync(AlbumArtSize.SIZE_160);
-
-            artistLinkLabel.Text = mh.GetCurrentTrack().GetArtistName();
-            artistLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetArtistURI());
-            songLinkLabel.Text = mh.GetCurrentTrack().GetTrackName();
-            songLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetTrackURI());
-            albumLinkLabel.Text = mh.GetCurrentTrack().GetAlbumName();
-            albumLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetAlbumURI());
+            try    //If no track is being played then say no song is being played
+            {
+                currentBar.Maximum = mh.GetCurrentTrack().GetLength() * 100;    //Gets track length and sets the end of the track as maximum value of progress bar
+                artistLinkLabel.Text = mh.GetCurrentTrack().GetArtistName();    //Gets Current tracks artist name
+                artistLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetArtistURI());
+                songLinkLabel.Text = mh.GetCurrentTrack().GetTrackName();   //Gets Current tracks name
+                songLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetTrackURI());
+                albumLinkLabel.Text = mh.GetCurrentTrack().GetAlbumName();  //Gets Current tracks album name
+                albumLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetAlbumURI());
+            
+            }
+            catch (NullReferenceException)
+            {
+                addToLog("No song is currently being played!", logBox);
+            }
+            
+            //Other contributers links, im going to add mine :)
             creatorLabel.LinkClicked += (senderTwo, args) => Process.Start("http://www.hackforums.net/showthread.php?tid=4819899");
             downloadersourceLabel.LinkClicked += (senderTwo, args) => Process.Start("http://www.hackforums.net/showthread.php?tid=4497329");
             ogcreatorLabel.LinkClicked += (senderTwo, args) => Process.Start("http://www.hackforums.net/showthread.php?tid=4506105");
+            redderLabel.LinkClicked += (senderTwo, args) => Process.Start("https://leakforums.net/user-49440");
 
             client.DownloadProgressChanged += client_DownloadProgressChanged;
             client.DownloadFileCompleted += client_DownloadFileCompleted;
@@ -324,7 +371,7 @@ namespace SpottyMP3
             eh.SetSynchronizingObject(this);
             eh.ListenForEvents(true);
 
-            if (string.IsNullOrWhiteSpace(Settings.Default.DownloadDestination))
+            if (string.IsNullOrWhiteSpace(Settings.Default.DownloadDestination))    //If there is no default download destination then set it to the program directory, else, set it to default download
                 browseForFolderBox.Text = System.AppDomain.CurrentDomain.BaseDirectory;
             else
                 browseForFolderBox.Text = Settings.Default.DownloadDestination;
@@ -337,6 +384,7 @@ namespace SpottyMP3
             tt.InitialDelay = 1000;
             tt.ReshowDelay = 500;
             tt.SetToolTip(retryIfUnder1Mb, "Whether or not to retry downloading a song if it finishes downloading smaller than 1MB");
+
         }
 
         private async void trackChange(TrackChangeEventArgs e)
@@ -369,11 +417,12 @@ namespace SpottyMP3
         }
         private void playstateChange(PlayStateEventArgs e)
         {
-            songPlaying.Text = "Playing: " + mh.IsPlaying();
+            songPlaying.Text = "Playing: " + mh.IsPlaying();    //Is a song playing right now?
+            adPlaying.Text = "AdPlaying: " + mh.IsAdRunning();  //Is an AD Playing right now?
         }
         private void volumeChange(VolumeChangeEventArgs e)
         {
-
+            
         }
 
         private void previousButton_Click(object sender, EventArgs e)
@@ -455,6 +504,28 @@ namespace SpottyMP3
         {
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
+        }
+
+        private async void timer1_Tick(object sender, EventArgs e)
+        {
+            //If an add is not running then get the tracks image
+            if (!mh.IsAdRunning())
+                currentPicture.Image = await spotify.GetMusicHandler().GetCurrentTrack().GetAlbumArtAsync(AlbumArtSize.SIZE_160);
+            try    //If no track is being played then say no song is being played
+            {
+                currentBar.Maximum = mh.GetCurrentTrack().GetLength() * 100;    //Gets track length and sets the end of the track as maximum value of progress bar
+                artistLinkLabel.Text = mh.GetCurrentTrack().GetArtistName();    //Gets Current tracks artist name
+                artistLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetArtistURI());
+                songLinkLabel.Text = mh.GetCurrentTrack().GetTrackName();   //Gets Current tracks name
+                songLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetTrackURI());
+                albumLinkLabel.Text = mh.GetCurrentTrack().GetAlbumName();  //Gets Current tracks album name
+                albumLinkLabel.LinkClicked += (senderTwo, args) => Process.Start(mh.GetCurrentTrack().GetAlbumURI());
+
+            }
+            catch (NullReferenceException)
+            {
+                //No song is currently being played!
+            }
         }
     }
 }

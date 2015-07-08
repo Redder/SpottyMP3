@@ -8,3 +8,14 @@ C:\Users\Scarsz\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\bin\De
 C:\Users\Scarsz\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.exe
 C:\Users\Scarsz\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.pdb
 C:\Users\Scarsz\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.Main.resources
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\bin\Debug\SpottyMP3.exe.config
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.exe
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.pdb
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\bin\Debug\SpottyMP3.exe
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\bin\Debug\SpottyMP3.pdb
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\bin\Debug\SpotifyAPI.dll
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\bin\Debug\Newtonsoft.Json.dll
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.csprojResolveAssemblyReference.cache
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.Main.resources
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.Properties.Resources.resources
+C:\Users\DJ Redder\Documents\Visual Studio 2013\Projects\SpottyMP3\SpottyMP3\obj\Debug\SpottyMP3.csproj.GenerateResource.Cache

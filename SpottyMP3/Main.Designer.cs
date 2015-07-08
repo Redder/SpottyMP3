@@ -1,4 +1,4 @@
-﻿namespace SpottyMP3
+namespace SpottyMP3
 {
     partial class Main
     {
@@ -61,11 +61,15 @@
             this.downloadProgress = new System.Windows.Forms.ProgressBar();
             this.downloadSpeedLabel = new System.Windows.Forms.Label();
             this.downloadBytesLabel = new System.Windows.Forms.Label();
+            this.creditsBox = new System.Windows.Forms.GroupBox();
+            this.redderLabel = new System.Windows.Forms.LinkLabel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.currentBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.currentPicture)).BeginInit();
             this.optionsBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.browseForFolderPicture)).BeginInit();
             this.debugBox.SuspendLayout();
+            this.creditsBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // currentBar
@@ -323,15 +327,15 @@
             this.logBox.Location = new System.Drawing.Point(264, 16);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(508, 195);
+            this.logBox.Size = new System.Drawing.Size(383, 171);
             this.logBox.TabIndex = 3;
             this.logBox.Text = "";
             // 
             // creatorLabel
             // 
-            this.creatorLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.creatorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.creatorLabel.AutoSize = true;
-            this.creatorLabel.Location = new System.Drawing.Point(470, 254);
+            this.creatorLabel.Location = new System.Drawing.Point(6, 16);
             this.creatorLabel.Name = "creatorLabel";
             this.creatorLabel.Size = new System.Drawing.Size(115, 13);
             this.creatorLabel.TabIndex = 4;
@@ -340,9 +344,9 @@
             // 
             // downloadersourceLabel
             // 
-            this.downloadersourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.downloadersourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadersourceLabel.AutoSize = true;
-            this.downloadersourceLabel.Location = new System.Drawing.Point(582, 254);
+            this.downloadersourceLabel.Location = new System.Drawing.Point(6, 38);
             this.downloadersourceLabel.Name = "downloadersourceLabel";
             this.downloadersourceLabel.Size = new System.Drawing.Size(190, 13);
             this.downloadersourceLabel.TabIndex = 5;
@@ -353,12 +357,13 @@
             // 
             this.ogcreatorLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.ogcreatorLabel.AutoSize = true;
-            this.ogcreatorLabel.Location = new System.Drawing.Point(518, 270);
+            this.ogcreatorLabel.Location = new System.Drawing.Point(120, 16);
             this.ogcreatorLabel.Name = "ogcreatorLabel";
             this.ogcreatorLabel.Size = new System.Drawing.Size(254, 13);
             this.ogcreatorLabel.TabIndex = 6;
             this.ogcreatorLabel.TabStop = true;
             this.ogcreatorLabel.Text = "Original creator [No source code used]: DarkN3ss61";
+            this.ogcreatorLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // notifyIcon
             // 
@@ -370,10 +375,10 @@
             // downloadProgress
             // 
             this.downloadProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.downloadProgress.Location = new System.Drawing.Point(397, 225);
+            this.downloadProgress.Location = new System.Drawing.Point(394, 205);
             this.downloadProgress.Maximum = 1;
             this.downloadProgress.Name = "downloadProgress";
-            this.downloadProgress.Size = new System.Drawing.Size(375, 19);
+            this.downloadProgress.Size = new System.Drawing.Size(250, 19);
             this.downloadProgress.TabIndex = 7;
             this.downloadProgress.Value = 1;
             // 
@@ -383,7 +388,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadSpeedLabel.AutoSize = true;
-            this.downloadSpeedLabel.Location = new System.Drawing.Point(264, 228);
+            this.downloadSpeedLabel.Location = new System.Drawing.Point(264, 208);
             this.downloadSpeedLabel.Name = "downloadSpeedLabel";
             this.downloadSpeedLabel.Size = new System.Drawing.Size(49, 13);
             this.downloadSpeedLabel.TabIndex = 18;
@@ -395,23 +400,52 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadBytesLabel.AutoSize = true;
-            this.downloadBytesLabel.Location = new System.Drawing.Point(319, 228);
+            this.downloadBytesLabel.Location = new System.Drawing.Point(316, 208);
             this.downloadBytesLabel.Name = "downloadBytesLabel";
             this.downloadBytesLabel.Size = new System.Drawing.Size(72, 13);
             this.downloadBytesLabel.TabIndex = 19;
             this.downloadBytesLabel.Text = "16000/16000";
             // 
+            // creditsBox
+            // 
+            this.creditsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.creditsBox.Controls.Add(this.redderLabel);
+            this.creditsBox.Controls.Add(this.creatorLabel);
+            this.creditsBox.Controls.Add(this.downloadersourceLabel);
+            this.creditsBox.Controls.Add(this.ogcreatorLabel);
+            this.creditsBox.Location = new System.Drawing.Point(264, 230);
+            this.creditsBox.Name = "creditsBox";
+            this.creditsBox.Size = new System.Drawing.Size(380, 59);
+            this.creditsBox.TabIndex = 21;
+            this.creditsBox.TabStop = false;
+            this.creditsBox.Text = "Credits";
+            // 
+            // redderLabel
+            // 
+            this.redderLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.redderLabel.AutoSize = true;
+            this.redderLabel.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.redderLabel.Location = new System.Drawing.Point(229, 38);
+            this.redderLabel.Name = "redderLabel";
+            this.redderLabel.Size = new System.Drawing.Size(145, 13);
+            this.redderLabel.TabIndex = 7;
+            this.redderLabel.TabStop = true;
+            this.redderLabel.Text = "New Active Editor: Redder04";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 298);
+            this.ClientSize = new System.Drawing.Size(659, 299);
+            this.Controls.Add(this.creditsBox);
             this.Controls.Add(this.downloadBytesLabel);
             this.Controls.Add(this.downloadSpeedLabel);
             this.Controls.Add(this.downloadProgress);
-            this.Controls.Add(this.ogcreatorLabel);
-            this.Controls.Add(this.downloadersourceLabel);
-            this.Controls.Add(this.creatorLabel);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.optionsBox);
             this.Controls.Add(this.currentBox);
@@ -430,6 +464,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.browseForFolderPicture)).EndInit();
             this.debugBox.ResumeLayout(false);
             this.debugBox.PerformLayout();
+            this.creditsBox.ResumeLayout(false);
+            this.creditsBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -468,6 +504,9 @@
         private System.Windows.Forms.CheckBox showDownloadNotification;
         private System.Windows.Forms.Label downloadSpeedLabel;
         private System.Windows.Forms.Label downloadBytesLabel;
+        private System.Windows.Forms.GroupBox creditsBox;
+        private System.Windows.Forms.LinkLabel redderLabel;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
